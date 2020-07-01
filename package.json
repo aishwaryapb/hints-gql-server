@@ -1,0 +1,21 @@
+{
+  "name": "hints-gql-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Aishwarya P Bannimatti",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "apollo-server": "^2.15.1",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.2.0",
+    "mongoose": "^5.9.20"
+  }
+}
