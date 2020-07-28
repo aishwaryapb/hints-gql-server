@@ -19,5 +19,8 @@ mongoose.connect(process.env.MONGO_DB, { useNewUrlParser: true })
         console.log('MongoDB connected');
         return server.listen({ port: PORT });
     })
-    .then(res => console.log(`Server running at ${res.url}`))
+    .then((res) => {
+        console.log(`Server running at ${res.url}`);
+        console.log(`Websocket running at ${res.subscriptionsUrl}`)
+    })
     .catch(err => console.error(err))

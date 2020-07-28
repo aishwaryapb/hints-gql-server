@@ -1,9 +1,17 @@
+const { withFilter } = require('apollo-server');
 const Game = require('../models/Game');
 
 const CURRENT_PLAYER = "CURRENT_PLAYER";
 const END_GAME = "END_GAME";
 
 module.exports = {
+    Query: {
+        async getGame(_, { gameId }) {
+            let game = null;
+            if(gameId) game = await Game.findById(gameId);
+            return game;
+        }
+    },
     Mutation: {
         async createGame(_, { name }) {
             if (name.trim() === '') throw new Error('Name cannot be empty')
@@ -11,7 +19,12 @@ module.exports = {
                 player1: {
                     name,
                     score: 0
-                }
+                },
+                player2: {
+                    name: null,
+                    score: null
+                },
+                currentPlayer: null
             });
             const game = await newGame.save();
             return game;
@@ -46,7 +59,10 @@ module.exports = {
     },
     Subscription: {
         getCurrentPlayer: {
-            subscribe: (_, __, { pubsub }) => pubsub.asyncIterator(CURRENT_PLAYER)
+            subscribe: withFilter(
+                (_, __, { pubsub }) => pubsub.asyncIterator(CURRENT_PLAYER),
+                (payload, variables) => payload.getCurrentPlayer.id === variables.gameId
+            )
         },
         endGame: {
             subscribe: (_, __, { pubsub }) => pubsub.asyncIterator(END_GAME)

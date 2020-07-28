@@ -3,19 +3,19 @@ const { gql } = require('apollo-server');
 module.exports = gql`
 
     type Player {
-        name: String!
-        score: Int!
+        name: String
+        score: Int
     }
 
     type Game {
         id: ID!
         player1: Player!
         player2: Player!
-        currentPlayer: Int!
+        currentPlayer: Int
     }
 
     type Query {
-        _dummy: String!
+        getGame(gameId: String!): Game
     }
 
     type Mutation {
@@ -26,7 +26,7 @@ module.exports = gql`
     }
 
     type Subscription {
-        getCurrentPlayer: Game!
+        getCurrentPlayer(gameId: String!): Game!
         endGame: String!
     }
 `;
