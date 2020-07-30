@@ -27,6 +27,6 @@ module.exports = gql`
 
     type Subscription {
         getCurrentPlayer(gameId: String!): Game!
-        endGame: String!
+        endGame(gameId: String!): String!
     }
 `;
