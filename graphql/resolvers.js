@@ -52,9 +52,9 @@ module.exports = {
         },
         async endGame(_, { gameId }, { pubsub }) {
             const game = await Game.findById(gameId);
-            const result = game.player1.score > game.player2.score ? `${game.player1.name} Wins!` : game.player1.score === game.player2.score ? "It's a draw!" : `${game.player2.name} Wins`;
+            const result = game.player1.score > game.player2.score ? `${game.player1.name} Wins! 🥳` : game.player1.score === game.player2.score ? "It's a draw! 🤝" : `${game.player2.name} Wins 🥳`;
             await game.delete();
-            pubsub.publish(END_GAME, { endGame: gameId });
+            pubsub.publish(END_GAME, { endGame: {result, id: gameId} });
             return result;
         }
     },
@@ -66,9 +66,9 @@ module.exports = {
             )
         },
         endGame: {
-            subscribe: (_, __, { pubsub }) => withFilter(
+            subscribe: withFilter(
                 (_, __, { pubsub }) => pubsub.asyncIterator(END_GAME),
-                (payload, variables) => payload.endGame === variables.gameId
+                (payload, variables) => payload.endGame.id === variables.gameId
             )
         }
     }

@@ -14,6 +14,11 @@ module.exports = gql`
         currentPlayer: Int
     }
 
+    type GameOver {
+        id: ID!
+        result: String!
+    }
+
     type Query {
         getGame(gameId: String!): Game
     }
@@ -27,6 +32,6 @@ module.exports = gql`
 
     type Subscription {
         getCurrentPlayer(gameId: String!): Game!
-        endGame(gameId: String!): String!
+        endGame(gameId: String!): GameOver!
     }
 `;
