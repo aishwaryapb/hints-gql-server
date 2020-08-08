@@ -19,8 +19,15 @@ module.exports = gql`
         result: String!
     }
 
+    type Question {
+        id: ID!
+        word: String!
+        taboo: [String!]
+    }
+
     type Query {
         getGame(gameId: String!): Game
+        getQuestion: Question!
     }
 
     type Mutation {

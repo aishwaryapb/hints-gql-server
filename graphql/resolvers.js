@@ -1,5 +1,5 @@
 const { withFilter } = require('apollo-server');
-const Game = require('../models/Game');
+const { Game, Question } = require('../models');
 
 const CURRENT_PLAYER = "CURRENT_PLAYER";
 const END_GAME = "END_GAME";
@@ -8,8 +8,13 @@ module.exports = {
     Query: {
         async getGame(_, { gameId }) {
             let game = null;
-            if(gameId) game = await Game.findById(gameId);
+            if (gameId) game = await Game.findById(gameId);
             return game;
+        },
+        async getQuestion() {
+            let question = null;
+            question = await Question.aggregate([{ $sample: { size: 1 } }, { $project: { id: "$_id", _id: 0, word: 1, taboo: 1 } }]);
+            return question[0];
         }
     },
     Mutation: {
@@ -54,7 +59,7 @@ module.exports = {
             const game = await Game.findById(gameId);
             const result = game.player1.score > game.player2.score ? `${game.player1.name} Wins! 🥳` : game.player1.score === game.player2.score ? "It's a draw! 🤝" : `${game.player2.name} Wins 🥳`;
             await game.delete();
-            pubsub.publish(END_GAME, { endGame: {result, id: gameId} });
+            pubsub.publish(END_GAME, { endGame: { result, id: gameId } });
             return result;
         }
     },
