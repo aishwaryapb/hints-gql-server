@@ -1,4 +1,4 @@
-const { withFilter } = require('apollo-server');
+const { withFilter, ApolloError } = require('apollo-server');
 const { Game, Question } = require('../models');
 
 const CURRENT_PLAYER = "CURRENT_PLAYER";
@@ -19,7 +19,7 @@ module.exports = {
     },
     Mutation: {
         async createGame(_, { name }) {
-            if (name.trim() === '') throw new Error('Name cannot be empty')
+            if (name.trim() === '') throw new ApolloError('Name cannot be empty')
             const newGame = new Game({
                 player1: {
                     name,
@@ -35,8 +35,9 @@ module.exports = {
             return game;
         },
         async updateGame(_, { name, gameId }, { pubsub }) {
-            if (name.trim() === '') throw new Error('Name cannot be empty')
+            if (name.trim() === '') throw new ApolloError('Name cannot be empty')
             const game = await Game.findById(gameId);
+            if (game.currentPlayer !== null) throw new ApolloError("Game already in progress");
             game.player2 = { name, score: 0 };
             game.currentPlayer = 0;
             await game.save();
